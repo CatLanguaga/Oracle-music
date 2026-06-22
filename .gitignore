@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+ENV/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Env / secrets
+.env
+.env.local
+*.pem
+
+# NumPy artifacts
+*.npy
+*.npz
+
+# Cache de API enrichment
+.cache/
+cache/
+
+# Node / frontend
+node_modules/
+dist/
+.vite/
+*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Claude Code
+.claude/
+
+# Logs
+*.log
+logs/
+
+# DB local
+*.sqlite
+*.db
