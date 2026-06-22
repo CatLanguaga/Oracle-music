@@ -11,7 +11,8 @@ class Settings(BaseSettings):
     spotify_client_id: str = ""
     spotify_client_secret: str = ""
     lastfm_api_key: str = ""
-    anthropic_api_key: str = ""
+    gemini_api_key: str = ""
+    gemini_model: str = "gemini-2.5-flash"
 
     # App
     app_env: str = "dev"

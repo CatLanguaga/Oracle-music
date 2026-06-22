@@ -48,7 +48,7 @@ Sin esto no hay juego. **Bloqueante para Fase 4.**
 
 - [ ] `enrichment/spotify_enricher.py`: cliente Spotipy + import por playlist/chart
 - [ ] `enrichment/lastfm_enricher.py`: cliente HTTP Last.fm + map tags → atributos
-- [ ] `enrichment/claude_enricher.py`: prompt + parse JSON de atributos semánticos
+- [ ] `enrichment/gemini_enricher.py`: prompt + parse JSON de atributos semánticos
 - [ ] `scripts/import_spotify_charts.py`: importa top tracks por género
 - [ ] `scripts/enrich_batch.py`: corre los 3 enrichers en orden y persiste vectores
 - [ ] Caché de respuestas de API en disco (evitar pagar 2 veces durante dev)
@@ -132,7 +132,7 @@ Capa visual. El producto se vuelve memorable acá.
 ## Fase 8 — Sugerencias + Moderación
 
 - [ ] Tabla `suggested_tracks` con estado pendiente/aprobado/rechazado
-- [ ] Job background: Claude enriquece atributos de sugerencia → aprobación automática si supera umbral
+- [ ] Job background: Gemini enriquece atributos de sugerencia → aprobación automática si supera umbral
 - [ ] `api/moderation.py`: endpoints admin (list pending / approve / reject)
 - [ ] Panel admin mínimo (HTML server-side está bien)
 - [ ] Notificación al usuario cuando su sugerencia entra al pool (email opcional, o solo "tu track ahora vive en el grimorio")
@@ -188,7 +188,7 @@ Continuo. No tiene "done".
 
 ## Riesgos a vigilar (del plan original)
 
-- **Spotify Audio Features deprecado** → Last.fm + Claude como fuentes primarias desde Fase 2
+- **Spotify Audio Features deprecado** → Last.fm + Gemini como fuentes primarias desde Fase 2
 - **Cold start** → lanzar con géneros limitados si catálogo < 2000
 - **Atributos subjetivos** → confiar en 0.0–1.0 + crowdsourcing
 - **Trampa visual** → no tocar Fase 6 hasta Fase 3 verde

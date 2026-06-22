@@ -7,7 +7,7 @@ Ver [`music-akinator-plan.md`](./music-akinator-plan.md) (diseño) y [`TODO.md`]
 ## Stack
 
 - Backend: FastAPI + NumPy + Postgres + Redis
-- Enrichment: Spotify + Last.fm + Claude
+- Enrichment: Spotify + Last.fm + Gemini
 - Frontend: Vite + React + Tailwind + Framer Motion
 
 ## Setup local
