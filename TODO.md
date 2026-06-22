@@ -5,34 +5,40 @@ Regla: **cerebro antes que cara**. Engine funciona → después UI bonita.
 
 ---
 
-## Fase 0 — Bootstrap del Proyecto
+## Fase 0 — Bootstrap del Proyecto ✅
 
 Setup base, sin lógica todavía.
 
-- [ ] `git init` + `.gitignore` (Python, Node, .env, __pycache__, node_modules, *.npy)
-- [ ] Estructura de directorios (`backend/`, `frontend/`, `docker-compose.yml`)
-- [ ] `backend/requirements.txt` con dependencias del plan
-- [ ] `backend/.env.example` (SPOTIFY_CLIENT_ID/SECRET, LASTFM_KEY, ANTHROPIC_API_KEY, DATABASE_URL, REDIS_URL, JWT_SECRET)
-- [ ] `docker-compose.yml`: postgres + redis
-- [ ] `README.md` con setup local
-- [ ] Virtualenv + instalar deps
-- [ ] Verificar conexión a postgres + redis vía script
+- [x] `git init` + `.gitignore` (Python, Node, .env, __pycache__, node_modules, *.npy, .claude/)
+- [x] Estructura de directorios (`backend/{core,enrichment,api,scripts,db,seeds}`, `frontend/`)
+- [x] `backend/requirements.txt` con dependencias (Python 3.12)
+- [x] `backend/.env.example` (Spotify, Last.fm, Anthropic, DATABASE_URL, REDIS_URL, JWT)
+- [x] `docker-compose.yml` (postgres + redis) — reservado para Coolify, no usado en dev
+- [x] `README.md` con setup local
+- [x] Virtualenv (Python 3.12.10) + instalar deps
+- [x] **Dev sin docker:** SQLite (`aiosqlite`) + `fakeredis` in-memory
+- [x] `backend/config.py` (pydantic-settings) — switch dev/prod por env vars
+- [x] `backend/main.py` con `/health`
+- [x] `scripts/check_infra.py` — smoke test DB + cache (dev y prod)
+- [x] Push inicial a `origin/main` (https://github.com/CatLanguaga/Oracle-music)
 
-**Done cuando:** `docker compose up` levanta DBs y `python -c "import fastapi, numpy, redis, asyncpg"` funciona.
+**Done:** `uvicorn backend.main:app` levanta y `GET /health` responde 200.
+Para prod (Coolify) basta cambiar `DATABASE_URL`/`REDIS_URL` en env.
 
 ---
 
-## Fase 1 — Schema + Modelos de Datos
+## Fase 1 — Schema + Modelos de Datos ✅
 
 Tablas vacías. Sin datos aún.
 
-- [ ] Schema SQL: `tracks`, `attributes`, `track_attributes`, `questions`, `sessions` (audit), `suggested_tracks`, `attribute_votes`
-- [ ] SQLAlchemy models en `backend/db/models.py`
-- [ ] Migraciones con Alembic
-- [ ] Seed de `questions` (las ~50 del plan, hardcodeadas en `seeds/questions.py`)
-- [ ] Seed de `attributes` (claves canónicas: `is_rock`, `is_fast_tempo`, etc.)
+- [x] Schema SQL: `tracks`, `attributes`, `track_attributes`, `questions`, `game_sessions` (audit), `suggested_tracks`, `attribute_votes`
+- [x] SQLAlchemy models en `backend/db/models.py` (async, declarative 2.0)
+- [x] Alembic configurado (async, `render_as_batch` para SQLite), migración inicial aplicada
+- [x] Seed de `attributes` (57 claves canónicas en `seeds/attributes.py`)
+- [x] Seed de `questions` (56 preguntas en `seeds/questions.py`)
+- [x] `scripts/seed_db.py` idempotente
 
-**Done cuando:** `alembic upgrade head` corre limpio + `SELECT COUNT(*) FROM questions` ≥ 50.
+**Done:** `alembic upgrade head` ok + `attributes=57 questions=56`.
 
 ---
 

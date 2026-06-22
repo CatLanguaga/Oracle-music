@@ -14,19 +14,27 @@ Ver [`music-akinator-plan.md`](./music-akinator-plan.md) (diseño) y [`TODO.md`]
 
 Requiere: Python 3.11+, Docker, Node 20+.
 
+**Dev local** usa SQLite + fakeredis. Docker queda reservado para Coolify.
+
 ```bash
-# 1. Levantar infra
-docker compose up -d
-
-# 2. Backend env
+# 1. Venv + deps
 cd backend
-python -m venv .venv
-source .venv/Scripts/activate   # Windows bash; en Linux/Mac: source .venv/bin/activate
+py -3.12 -m venv .venv
+source .venv/Scripts/activate    # Linux/Mac: source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env             # editar con tus claves
+cp .env.example .env             # editar con tus API keys
 
-# 3. Smoke test infra
-python scripts/check_infra.py
+# 2. Smoke test infra (desde raíz del repo)
+cd ..
+python -m backend.scripts.check_infra
+
+# 3. Migraciones + seed
+alembic upgrade head
+python -m backend.scripts.seed_db
+
+# 4. Run API
+uvicorn backend.main:app --reload
+# → http://127.0.0.1:8000/health
 ```
 
 ## Estructura

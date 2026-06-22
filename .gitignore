@@ -48,3 +48,5 @@ logs/
 # DB local
 *.sqlite
 *.db
+nyota.db
+nyota.db-journal
