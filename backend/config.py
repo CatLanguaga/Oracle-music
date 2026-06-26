@@ -1,18 +1,24 @@
 """Settings de la app. Carga desde .env."""
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+_ENV_FILE = Path(__file__).resolve().parent / ".env"
+
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=_ENV_FILE, extra="ignore")
 
     # API keys
     spotify_client_id: str = ""
     spotify_client_secret: str = ""
     lastfm_api_key: str = ""
+    lastfm_shared_secret: str = ""
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.5-flash"
+    pollinations_api_key: str = ""
+    pollinations_model: str = "openai"
 
     # App
     app_env: str = "dev"
