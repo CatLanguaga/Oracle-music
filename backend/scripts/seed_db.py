@@ -1,7 +1,11 @@
-"""Carga atributos y preguntas canónicas en la DB. Idempotente."""
+"""Carga atributos y preguntas canónicas en la DB. Idempotente.
+
+`questions.md` es la fuente de verdad. Filas no presentes en él se marcan
+`enabled=False` (no se borran para preservar histórico).
+"""
 import asyncio
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from backend.db.base import SessionLocal
 from backend.db.models import Attribute, Question
@@ -23,12 +27,16 @@ async def seed() -> None:
             new_attrs += 1
 
         # ---- questions ----
-        existing_qs = {
-            (a, t)
-            for (a, t) in (
-                await db.execute(select(Question.attribute_key, Question.text_es))
+        active_pairs = {(a, t) for a, t, _ in QUESTIONS}
+        existing_qs: dict[tuple[str, str], tuple[int, bool]] = {
+            (a, t): (qid, enabled)
+            for (qid, a, t, enabled) in (
+                await db.execute(
+                    select(Question.id, Question.attribute_key, Question.text_es, Question.enabled)
+                )
             ).all()
         }
+
         new_qs = 0
         for attribute_key, text_es, category in QUESTIONS:
             if (attribute_key, text_es) in existing_qs:
@@ -38,13 +46,36 @@ async def seed() -> None:
                     attribute_key=attribute_key,
                     text_es=text_es,
                     category=category,
+                    enabled=True,
                 )
             )
             new_qs += 1
 
+        # Reactivar filas que vuelven a estar activas
+        reactivated = 0
+        for (a, t), (qid, enabled) in existing_qs.items():
+            if (a, t) in active_pairs and not enabled:
+                await db.execute(
+                    update(Question).where(Question.id == qid).values(enabled=True)
+                )
+                reactivated += 1
+
+        # Deshabilitar filas que ya no están en el md
+        disabled = 0
+        for (a, t), (qid, enabled) in existing_qs.items():
+            if (a, t) not in active_pairs and enabled:
+                await db.execute(
+                    update(Question).where(Question.id == qid).values(enabled=False)
+                )
+                disabled += 1
+
         await db.commit()
         print(f"[seed] attributes: +{new_attrs} (total {len(ATTRIBUTES)})")
-        print(f"[seed] questions:  +{new_qs} (total {len(QUESTIONS)})")
+        print(
+            f"[seed] questions:  +{new_qs} new · "
+            f"+{reactivated} reactivated · -{disabled} disabled "
+            f"(active in md: {len(QUESTIONS)})"
+        )
 
 
 if __name__ == "__main__":
